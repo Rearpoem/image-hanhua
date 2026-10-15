@@ -1,0 +1,7 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>图片汉化</title><link rel="stylesheet" href="ui.css"></head><body class="popup">
+<header><span class="mark" aria-hidden="true">译</span><div><h1>图片汉化</h1><div class="sub">英文或韩文图片 → 中文 · 本地 / AI</div></div></header>
+<div class="state" role="status"><span class="dot" id="dot"></span><span id="service">正在连接本地服务…</span></div>
+<label class="check"><input type="checkbox" id="cdn"><span>允许读取跨域图片（CDN）。Edge 会请求网站读取权限，用于下载图片。</span></label>
+<label class="field" for="mode">翻译方式</label><select id="mode"><option value="local">本地快速（离线）</option><option value="ai">AI 上下文（远程 API）</option></select><p class="note">AI 模式会向配置的接口发送网页正文和图片文字，可能产生 API 费用。</p><button class="primary wide" id="start">翻译当前页</button><div class="row"><button id="toggle">切换原图 / 中文</button><button id="stop">停止翻译</button></div>
+<p class="note">开始后，已加载和新出现的图片会逐张处理。小图标自动跳过，网页普通文字保持原样。</p><div id="message" class="error-text" role="status" aria-live="polite"></div>
+<div class="foot"><button class="link" id="settings">配对设置</button><button class="link" id="ai-settings">API 配置</button><button class="link" id="local">本地服务页面</button></div><script src="popup.js"></script></body></html>

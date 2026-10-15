@@ -1,0 +1,8 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>图片汉化 · 配对设置</title><link rel="stylesheet" href="ui.css"></head><body><main class="settings">
+<header><span class="mark" aria-hidden="true">译</span><div><h1>连接你的本地服务</h1><div class="sub">图片汉化 · Edge 本地版</div></div></header>
+<p>先运行工具文件夹中的启动脚本（Mac：mac/启动.command，Windows：windows/start.bat），再打开本地设置页，复制配对码到这里。配对码只保存在这台电脑的插件中。</p>
+<button id="open">打开本地设置页</button><label class="field" for="token">本地配对码</label><input id="token" type="password" autocomplete="off" spellcheck="false" placeholder="粘贴本地设置页中的配对码"><label class="check"><input type="checkbox" id="show"><span>显示配对码</span></label>
+<div class="row"><button class="primary" id="save">保存并检查连接</button><button id="clear">清除配对码</button></div><div class="status-message" id="message" role="status" aria-live="polite"></div>
+<h2>处理范围</h2><p>自动识别英文或韩文图片并翻译成简体中文，支持普通图片和滚动后加载的图片。CSS 背景图、画布、视频、跨域内嵌页面和旋转图片暂不覆盖。</p>
+<h2>识别在本机，翻译方式可选</h2><p>识别和翻译服务只监听本机地址。插件读取网页原有图片后，将图片交给本地服务；本地快速模式不调用云端；AI 上下文模式会把正文和识别文字发送给你配置的 API。识别时会创建临时图片，处理结束即删除，不长期保存图片或识别文字。内存缓存会随服务退出而清除。</p>
+<p><a href="http://127.0.0.1:17863/ai-settings" target="_blank" rel="noopener">打开 AI API 配置</a></p><button id="revoke">撤回跨域图片读取权限</button><script src="options.js"></script></main></body></html>

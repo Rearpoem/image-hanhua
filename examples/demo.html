@@ -1,0 +1,9 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="local-token" content="PAIRING_TOKEN"><title>图片汉化 · 本地体验</title><link rel="stylesheet" href="demo.css"></head><body><main>
+<header><div class="tag">图片汉化 / LOCAL</div><h1>让图片里的英韩文字<br>直接变成中文。</h1><p>体验页使用与插件相同的覆盖程序。本地模式使用离线模型；AI 模式向配置的接口发送网页正文和图片文字，可能产生费用。</p></header>
+<div class="controls"><select id="mode" aria-label="翻译方式"><option value="local">本地快速</option><option value="ai">AI 上下文（远程 API）</option></select><a href="/ai-settings">API 配置</a><button id="start">开始翻译图片</button><button id="toggle">切换原图 / 中文</button><button id="stop">停止并移除中文</button><a href="/setup">安装与配对</a></div>
+<p id="feedback" role="status"></p>
+<section id="korean"><div class="caption"><h2>韩文文字框与英文混排</h2><span>自动判断每个文字框的语言</span></div><img src="/korean.png" alt="包含韩文文字框和英文的示例图片"></section>
+<section><div class="caption"><h2>英文文字框</h2><span>可点击图片链接，中文覆盖不影响原链接</span></div><a href="#more"><img id="main-image" src="/sample.png" alt="带有英文文字框的示例图片"></a></section>
+<section id="more"><div class="caption"><h2>保持图片的位置和比例</h2><span>试试缩小图片和更换图片</span></div><div class="controls secondary"><button id="resize">缩小 / 恢复图片</button><button id="swap">更换为无文字图片 / 恢复</button><button id="add">加载一张新图片</button><button id="error">加入超大图片（异常场景）</button></div><img id="fit-image" class="contain" src="/sample.png" alt="有留白且等比例缩放的英文或韩文图片"><div id="added"></div></section>
+<footer>识别：macOS Vision（Mac）/ RapidOCR（Windows） · 翻译：离线模型 / 可配置 AI<br>离线与 AI 模式均为韩语直接译中文，不经英语中转。CSS 背景、画布、视频和跨域内嵌页面暂不处理。</footer>
+</main><script src="/engine.js"></script><script src="/jobs.js"></script><script src="/demo.js"></script></body></html>

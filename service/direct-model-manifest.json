@@ -1,0 +1,37 @@
+{
+  "repo": "gn64/M2M100_418M_CTranslate2",
+  "revision": "18e406c615ef2991fa74d53734bf66b0a6b10cb4",
+  "upstream": "facebook/m2m100_418M",
+  "files": [
+    {
+      "name": "README.md",
+      "size": 492,
+      "hash": "b6dc1c373a4ee2a96d02d535375c771e13e64c29",
+      "algorithm": "git-sha1"
+    },
+    {
+      "name": "config.json",
+      "size": 223,
+      "hash": "8bd04aedb22d96036248d689d6dade821fb05876",
+      "algorithm": "git-sha1"
+    },
+    {
+      "name": "model.bin",
+      "size": 490667752,
+      "hash": "a1826980fc5c037e69c7ac94fcb56c03001a66f380eb71863cc0a3879e71421b",
+      "algorithm": "sha256"
+    },
+    {
+      "name": "sentencepiece.bpe.model",
+      "size": 2423393,
+      "hash": "d8f7c76ed2a5e0822be39f0a4f95a55eb19c78f4593ce609e2edbc2aea4d380a",
+      "algorithm": "sha256"
+    },
+    {
+      "name": "shared_vocabulary.json",
+      "size": 2796509,
+      "hash": "7fbe484413e3a8b90e20dade34d3519a8a324255",
+      "algorithm": "git-sha1"
+    }
+  ]
+}
