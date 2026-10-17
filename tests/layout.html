@@ -1,0 +1,23 @@
+<!doctype html><meta charset="utf-8"><style>body{margin:0}img{display:block;width:793px}</style><img id="sample" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3OTMiIGhlaWdodD0iNTE4Ij48cmVjdCB3aWR0aD0iNzkzIiBoZWlnaHQ9IjUxOCIgZmlsbD0iI2RmZjVmYiIvPjxlbGxpcHNlIGN4PSIzNzAiIGN5PSIyNTUiIHJ4PSIyNTUiIHJ5PSIyMTUiIGZpbGw9IndoaXRlIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjQiLz48L3N2Zz4="/><pre id="report"></pre><script src="../extension/engine.js"></script><script>const result={width:793,height:518,boxes:[{"x": 0.24, "y": 0.3, "width": 0.44, "height": 0.058, "line_height": 0.058, "original": "NO, MY HUSBAND", "translation": "不是，是我丈夫"}, {"x": 0.36, "y": 0.4, "width": 0.21, "height": 0.055, "line_height": 0.055, "original": "MY HUSBAND", "translation": "我丈夫"}, {"x": 0.36, "y": 0.51, "width": 0.21, "height": 0.055, "line_height": 0.055, "original": "A WEEK AGO", "translation": "一周前"}, {"x": 0.36, "y": 0.62, "width": 0.21, "height": 0.09, "line_height": 0.09, "original": "LEFT ON BUSINESS", "translation": "出差了"}]};
+ const tool=LocalImageTranslator.create({translate:async()=>result});
+ const pause=()=>new Promise(r=>setTimeout(r,150));
+ window.onload=async()=>{
+ tool.start(); await pause();
+ const shadow=document.querySelector('[data-local-image-translator]').shadowRoot;
+ shadow.querySelector('.panel').hidden=true;
+ const reports=[];
+ for(const width of [793,396,180]){
+ sample.style.width=width+'px'; await pause();
+ reports.push({width,boxes:[...shadow.querySelectorAll('.box')].map(node=>{
+ const outer=node.getBoundingClientRect(); const range=document.createRange(); range.selectNodeContents(node.firstElementChild || node);
+ const rect=range.getBoundingClientRect();
+ return {text:node.textContent,font:getComputedStyle(node).fontSize,contained:rect.top>=outer.top && rect.bottom<=outer.bottom && rect.left>=outer.left && rect.right<=outer.right};
+ })});
+ }
+ sample.style.width='793px'; await pause();
+ const masks=[...shadow.querySelectorAll('.mask')];
+ const maskLayers=masks.length===result.boxes.length && masks.every(m=>getComputedStyle(m).zIndex==='0') && [...shadow.querySelectorAll('.box')].every(n=>getComputedStyle(n).zIndex==='1');
+ const passed=maskLayers && reports.every(r=>r.boxes.length===4 && r.boxes.every(b=>b.contained));
+ document.querySelector('#report').textContent=(passed?'PASS':'FAIL')+' — 12 text bounds checks; mask layering: '+maskLayers+'\n'+JSON.stringify(reports,null,2);
+ document.title=passed?'PASS: translation layout':'FAIL: translation layout';
+ };</script>

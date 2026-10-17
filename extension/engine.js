@@ -11,8 +11,10 @@
     const shadow = host.attachShadow({ mode: 'open' });
     shadow.innerHTML = `<style>
       :host{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:#18223b}
-      *{box-sizing:border-box}.layer{position:absolute;overflow:hidden;pointer-events:none}
-      .box{position:absolute;background:#fff;color:#151e31;display:flex;align-items:center;justify-content:center;text-align:center;padding:1px 3px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;font-weight:550;line-height:1.14;overflow:hidden;border-radius:2px;white-space:normal;word-break:break-word;pointer-events:none}
+      *{box-sizing:border-box}.layer{position:absolute;overflow:hidden;pointer-events:none;isolation:isolate}
+      .mask{position:absolute;background:#fff;border-radius:2px;z-index:0}
+      .box{position:absolute;z-index:1;color:#151e31;display:flex;align-items:center;justify-content:center;text-align:center;padding:1px 3px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;font-weight:550;line-height:1.3;overflow:hidden;white-space:normal;overflow-wrap:anywhere;pointer-events:none}
+      .text{display:block;flex:none;width:100%;min-width:0}
       .panel{position:absolute;right:20px;bottom:20px;max-width:min(430px,calc(100vw - 24px));border:1px solid #ccd6e6;background:#f5f8ff;border-radius:14px;box-shadow:0 5px 22px #23396222;padding:13px 15px;pointer-events:auto;font-size:13px;line-height:1.55}
       [hidden]{display:none!important}.restore{position:absolute;right:20px;bottom:20px;width:42px;height:42px;border-radius:50%;background:#f5f8ff;box-shadow:0 3px 12px #23396222;pointer-events:auto;font-weight:750;font-size:17px}.heading{font-weight:750;color:#234d9b;font-size:14px}.status{margin:5px 0;color:#334562}.error{color:#a23737;font-size:12px;max-height:68px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}
       .monitor{margin-top:7px;padding-top:7px;border-top:1px solid #ccd6e6;font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}progress{width:100%;height:8px;accent-color:#2458a4}.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}button{font:inherit;border:1px solid #bccbe2;background:white;color:#234d9b;border-radius:7px;padding:5px 9px;cursor:pointer}button:focus-visible{outline:3px solid #6495e5;outline-offset:2px}button:hover{background:#e6edfc}
@@ -71,12 +73,19 @@
     }
 
     function fit(node, width, height, sourceHeight) {
-      let size = Math.min(32, Math.max(8, sourceHeight * 0.85));
-      node.style.fontSize = `${size}px`;
-      while (size > 8 && (node.scrollHeight > height + 1 || node.scrollWidth > width + 1)) {
-        size -= 1;
+      const text = node.firstElementChild;
+      const availableWidth = Math.max(0, width - 6), availableHeight = Math.max(0, height - 2);
+      // Measure the unconstrained text, not a clipped, vertically centred flex box.
+      // Small displayed images also need sizes below 8px to stay inside OCR bounds.
+      let low = 0, high = Math.min(32, sourceHeight * 0.85, availableHeight / 1.3);
+      for (let i = 0; i < 12; i++) {
+        const size = (low + high) / 2;
         node.style.fontSize = `${size}px`;
+        const rect = text.getBoundingClientRect();
+        if (rect.height <= availableHeight && text.scrollWidth <= availableWidth + 0.5) low = size;
+        else high = size;
       }
+      node.style.fontSize = `${low}px`;
     }
 
     function imageArea(img, result) {
@@ -125,12 +134,13 @@
         }
         e.layer.style.cssText = `display:block;left:${c.left}px;top:${c.top}px;width:${c.right-c.left}px;height:${c.bottom-c.top}px;`;
         e.result.boxes.forEach((b, i) => {
-          const node = e.layer.children[i];
+          const node = e.layer.children[i * 2 + 1], mask = e.layer.children[i * 2];
           const pad = Math.min(4, Math.max(1,b.height*a.h*0.08));
           const w = b.width*a.w+pad*2, h = b.height*a.h+pad*2;
           node.style.left = `${a.x-c.left+b.x*a.w-pad}px`;
           node.style.top = `${a.y-c.top+b.y*a.h-pad}px`;
           node.style.width = `${w}px`; node.style.height = `${h}px`;
+          mask.style.cssText = node.style.cssText;
           fit(node, w, h, b.line_height*a.h);
         });
       }
@@ -141,11 +151,14 @@
       e.layer?.remove();
       const layer = document.createElement('div'); layer.className = 'layer';
       for (const box of e.result.boxes) {
+        const mask = document.createElement('div'); mask.className = 'mask';
+        mask.setAttribute('aria-hidden', 'true');
         const node = document.createElement('div'); node.className = 'box';
-        node.textContent = box.translation || '';
+        const text = document.createElement('span'); text.className = 'text';
+        text.textContent = box.translation || ''; node.append(text);
         if (!box.translation) node.style.display='none';
         node.setAttribute('aria-label', `${box.original} → ${box.translation}`);
-        layer.append(node);
+        layer.append(mask, node);
       }
       shadow.append(layer); e.layer = layer; scheduleLayout();
     }
